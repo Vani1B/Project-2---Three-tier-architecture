@@ -97,7 +97,26 @@ Fifth security group for mysql, inbound rule would be mysql on port 3306, source
 ![image](https://github.com/user-attachments/assets/1cde7839-5ed5-419f-8d96-44d73349325a)
 
 
-Step2: Database Deploymnent
+Step2: Database Deployment
+
+To provision RDS (Relational Database) we need to create subnet groups. Navigate to RDS in AWS console and click subnet groups. Name it as three-tier-db-subnetgroup. select custom VPC. select availability zones as 1a and 1b. select subnets. subnets should be our database private subnets and click create.
+
+![image](https://github.com/user-attachments/assets/f935715e-e26f-4cf3-9fc1-73d3f0b82537)
+
+Now Database deployment, click on data bases, create database. Select mysql Aurora, template should be dev/test, give master password. click on create Aurora replica in a different AZ. This will help high availability and fault tolerance. select custom vpc, No public access, select database security group, Authentication should be password authentication and create database.
+
+![image](https://github.com/user-attachments/assets/7d378272-ccc8-41c1-b99f-295759810a8f)
+
+Step3: 
+
+
+
+
+
+
+
+
+
 
 
 

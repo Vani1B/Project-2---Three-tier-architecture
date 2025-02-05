@@ -107,7 +107,111 @@ Now Database deployment, click on data bases, create database. Select mysql Auro
 
 ![image](https://github.com/user-attachments/assets/7d378272-ccc8-41c1-b99f-295759810a8f)
 
-Step3: 
+Step3: App tier Instance Deployment
+
+Navigate to Ec2 Instance. click on Launch Instance. Name it as MyAPPserver1. select Amazon linux image, select instance type as t2.micro. no key pair. select custom vpc, subnet as private subnet AZ1, select private instance sg, In Advance settings, select created IAM role and launch instance. 
+
+![image](https://github.com/user-attachments/assets/380e4eae-d4b8-4b21-be06-843a42d1fdbe)
+
+
+To connect the instance, select instance and click on session manager. login to ec2 user. install mysql download related packages. 
+
+![image](https://github.com/user-attachments/assets/bf48cebb-c0bb-4ce6-b5fc-5b511c290380)
+
+
+![image](https://github.com/user-attachments/assets/9637b35a-7c22-4d8a-ac13-1daaf9675944)
+
+
+Before running the mysql commands will change it to RDS endpoint use the writer instance endpoint. give password to login.
+run command to create database. create table.
+
+![image](https://github.com/user-attachments/assets/32b35507-6aab-4153-b955-9dd54a7ed7f0)
+
+![image](https://github.com/user-attachments/assets/6eb8d925-94d0-42ac-83ac-ab96a108257d)
+
+
+now upload the application code to S3.
+
+![image](https://github.com/user-attachments/assets/4ada4bd3-4eec-4762-9279-191ecc718b7c)
+
+go back session manager and install nvm 16 and install pm2 to make the app keep on running. Will copy the files and folder from s3 bucket to the instance and test the app tier with localhost 4000.
+
+![image](https://github.com/user-attachments/assets/32b07817-30d0-4ce0-bcba-3b8511d1a447)
+
+Step4: Internal loadbalancing and Autoscaling
+
+steps for loadbalacer and Autoscaling:
+
+1. AMI creation for APP tier
+
+2. Create a Launch template
+
+3. Create Autoscaling
+
+4. Deploy internal load balancer
+
+we will create an Amazon Machine Image (AMI) of the app tier instance we just created, and use that to set up autoscaling with a load balancer in order to make this tier highly available.
+
+Select the App tier instance and under the Actions click on Image and templates to create image.
+
+![image](https://github.com/user-attachments/assets/00b11452-3587-42df-941b-6ce0523a9dd6)
+
+create a target group. the target group is to use with loadbalancer to balance the traffic across the private app tier instance. Set the protocol as http on port 4000. As Node.js runs on port 4000.select custom vpc. Health check path to be /health. click create.
+
+To create the Internal load balancer, Go to Ec2 dashboard select load balancer. Will create application load balancer, name it as internal load balancer, select VPC and select private subnet-AZ1 and private subnet AZ2, select internal lb sg, http on port 80, target group is app tier target group. click on create load balancer.
+
+![image](https://github.com/user-attachments/assets/94e4ef5a-5ca8-445d-bf25-f0644ccb168b)
+
+Before creating ASG to need to create Launch template, using AMI. Name it as App tier launch template. use custom AMI, select private instance sg, In Advance details use IAM role. 
+
+![image](https://github.com/user-attachments/assets/f7cdfd45-8949-4cb0-8676-92be4d86b6c1)
+
+Go to Auto scaling group, create autoscaling, use custom vpc, and attach to the internal load balancer by selecting target group, configure scaling policies desired -2, min-2 and max-2
+
+![image](https://github.com/user-attachments/assets/04986e0b-cd3a-4e74-9a3b-406ca287a8fa)
+
+Step 5: Web-tier Instance Deployment
+
+We will deploy an EC2 instance for the web tier and make all necessary software configurations for the NGINX web server and React.js website.
+
+Before we create and configure the web instances, open up the application-code/nginx.conf file from the repo we downloaded. Scroll down to line 58 and replace [INTERNAL-LOADBALANCER-DNS] with your internal load balancer’s DNS entry.
+
+
+![image](https://github.com/user-attachments/assets/432bd714-14d6-434b-8eee-9ca065c1e9f4)
+
+
+Step6: External Load balancing and autoscaling
+
+Will repeat the same steps as above for external load balancer and autoscaling by creating AMI, Target group, Launch template, load balancer and ASG. It is just we use public subnets and internet facing security group.
+
+![image](https://github.com/user-attachments/assets/50578a04-1e2a-4d21-bc0c-56b2d9d3865d)
+
+
+Use the External load balancer DNS endpoint for the results.
+
+
+![image](https://github.com/user-attachments/assets/cf8f0307-f6eb-474a-9723-bf29c23fbb24)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
